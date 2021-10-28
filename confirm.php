@@ -27,15 +27,59 @@
 //ini_set('display_errors',1);
    // error_reporting(E_ALL);
 
-        echo "<pre>";
-    echo "<h2> we appreciate your business</h2>";
 
+
+        echo "<pre>";
+    echo "<h2>we appreciate your business</h2>";
+
+        define("TAX_RATE",0.065);
+        define("TOPPINGS_PRICE", 0.50);
     //var_dump($_GET);
 
     $fname = $_POST['fname'];
     $lname = $_POST['lname'];
     $method = $_POST['method'];
-    $toppings = implode(",",$_GET['toppings']);
+    $address = nl2br($_POST['address']);
+
+    $toppings = "";
+    $numToppings = 0;
+
+    if(!empty($_POST['toppings']))
+    {
+        $toppings = implode(",",$_POST['toppings']);
+        $numToppings = sizeof($_POST['toppings']);
+    }
+
+    $size = $_POST['size'];
+
+
+
+    /*
+     * calc price of pizza
+     * base price:
+     * small 10.00
+     * medium 15.00
+     * large 20.00
+     * toppings .50 each
+     * sales tax 0.065
+     *
+     * */
+        if($size =="small"){
+            $price = 10.00;
+        }elseif ($size == "medium" ){
+            $price = 15.00;
+        }else {
+            $price = 20.00;
+        }
+
+        //add cost of toppings
+        $price += $numToppings * TOPPINGS_PRICE;
+
+
+        // add sales tax
+        $price += $price *  TAX_RATE ;
+        $price = number_format($price,2);
+
 
     echo "<h1>thank you for your order, $fname , $lname</h1>";
 
@@ -43,7 +87,7 @@
     echo " <p>name: $fname ,$lname</p>";
     echo " <p>method: $method </p>";
     echo " <p>toppings: $toppings </p>";
-
+    echo "<p> total price : $$price</p>";
 
  ?>
 
